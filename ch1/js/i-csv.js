@@ -1,5 +1,6 @@
-import { CommaSeparatedListOutputParser } from "@langchain/core/output_parsers";
+import { CommaSeparatedListOutputParser } from '@langchain/core/output_parsers';
 
 const parser = new CommaSeparatedListOutputParser();
 
-await parser.invoke("apple, banana, cherry");
+const response = await parser.invoke('apple, banana, cherry');
+console.log(response);

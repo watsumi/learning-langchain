@@ -6,7 +6,7 @@ const chatbot = RunnableLambda.from(async function* (values) {
 });
 
 for await (const token of await chatbot.stream({
-  question: "Which model providers offer LLMs?",
+  question: 'Which model providers offer LLMs?',
 })) {
   console.log(token);
 }

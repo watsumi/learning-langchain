@@ -1,5 +1,6 @@
 import { OpenAI } from '@langchain/openai';
 
-const model = new OpenAI({ model: 'gpt-3.5-turbo-instruct' });
+const model = new OpenAI({ model: 'gpt-3.5-turbo' });
 
-await model.invoke('The sky is');
+const response = await model.invoke('The sky is');
+console.log(response);
