@@ -70,7 +70,24 @@ node ch2/js/a-text-loader.js
 
 ## Troubleshooting
 
+1. PgVector Vector Store Installation or Connection Errors:
+
+Errors for python:
+
+- ***Can't find `psycopg` or `psycopg_binary`***: Try to reinstall `psycopg` with the [binary] extra, which includes pre-compiled binaries and necessary dependencies.
 
 ```bash
-pip3 install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cpu
+pip install psycopg[binary]
 ```
+Then run the file again.
+
+```bash
+pip install setuptools
+```
+
+alternatives:
+
+If you're having issues connecting to postgres via docker, you can use `Chroma` as an alternative. `Chroma` is an AI-native open-source vector database.
+
+You can install `Chroma` as per the instructions for [Python](https://python.langchain.com/docs/integrations/vectorstores/chroma) or [Javascript](https://js.langchain.com/docs/integrations/vectorstores/chroma/).
+
