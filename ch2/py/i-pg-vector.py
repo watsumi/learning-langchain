@@ -57,9 +57,11 @@ db.add_documents(
     ids=ids,
 )
 
-print("Documents added successfully")
+print("Documents added successfully.\n Fetched documents count:",
+      len(db.get_by_ids(ids)))
 
 print("Deleting document with id", ids[1])
-db.delete({"ids": [ids[1]]})
+db.delete({"ids": ids})
 
-print("Document deleted successfully")
+print("Document deleted successfully.\n Fetched documents count:",
+      len(db.get_by_ids(ids)))
