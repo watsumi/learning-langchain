@@ -1,6 +1,6 @@
 from langchain_openai import OpenAIEmbeddings
 
-model = OpenAIEmbeddings()
+model = OpenAIEmbeddings(model="text-embedding-3-small")
 embeddings = model.embed_documents([
     "Hi there!",
     "Oh, hello!",

@@ -11,9 +11,9 @@ splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 chunks = splitter.split_documents(doc)
 
 # Generate embeddings
-embeddings_model = OpenAIEmbeddings()
+embeddings_model = OpenAIEmbeddings(model="text-embedding-3-small")
 embeddings = embeddings_model.embed_documents(
-    chunk.page_content for chunk in chunks
+    [chunk.page_content for chunk in chunks]
 )
 
 print(embeddings)
