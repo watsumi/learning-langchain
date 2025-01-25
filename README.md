@@ -4,6 +4,8 @@ This repository contains code examples (in python and javascript) from each chap
 
 To run the examples, you can clone the repository and run the examples in your preferred language.
 
+## Quick Start
+
 **For python examples:**
 
 If you haven't installed python on your system, install it first as per the instructions [here](https://www.python.org/downloads/).
@@ -64,4 +66,11 @@ npm install
 
 ```bash
 node ch2/js/a-text-loader.js
+```
+
+## Troubleshooting
+
+
+```bash
+pip3 install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cpu
 ```
