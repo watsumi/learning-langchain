@@ -103,13 +103,10 @@ pip install psycopg[binary]
 ```
 Then run the file again.
 
-```bash
-pip install setuptools
-```
 
-alternatives:
+If you're having issues connecting to postgres via docker, you can use try some alernative vector stores:
 
-If you're having issues connecting to postgres via docker, you can use `Chroma` as an alternative. `Chroma` is an AI-native open-source vector database.
+- Use the memory vector store instead: This is a simple vector store that stores vectors in memory. It is not persistent and will be lost when the program is terminated. Here's the API for [Python](https://python.langchain.com/api_reference/core/vectorstores/langchain_core.vectorstores.in_memory.InMemoryVectorStore.html) and docs for [Javascript](https://js.langchain.com/docs/integrations/vectorstores/memory/).
 
-You can install `Chroma` as per the instructions for [Python](https://python.langchain.com/docs/integrations/vectorstores/chroma) or [Javascript](https://js.langchain.com/docs/integrations/vectorstores/chroma/).
+- You can also use `Chroma`-- an AI-native open-source vector database. You can install `Chroma` as per the instructions for [Python](https://python.langchain.com/docs/integrations/vectorstores/chroma) or [Javascript](https://js.langchain.com/docs/integrations/vectorstores/chroma/).
 
