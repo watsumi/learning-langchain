@@ -18,6 +18,8 @@ dependencies = [
     "pypdf>=5.1.0",
     "psycopg[binary]>=3.2.4",  # Updated to include [binary] extra
     "setuptools>=75.8.0",
+    "langsmith>=0.3.2",
+    "langgraph-checkpoint-sqlite>=2.0.3",
 ]
 
 [build-system]
