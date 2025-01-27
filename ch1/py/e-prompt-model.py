@@ -1,4 +1,4 @@
-from langchain_openai.llms import OpenAI
+from langchain_openai.chat_models import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
 
 # both `template` and `model` can be reused many times
@@ -11,7 +11,7 @@ Question: {question}
 
 Answer: """)
 
-model = OpenAI()
+model = ChatOpenAI(model="gpt-3.5-turbo")
 
 # `prompt` and `completion` are the results of using template and model once
 
@@ -22,4 +22,5 @@ prompt = template.invoke(
     }
 )
 
-model.invoke(prompt)
+response = model.invoke(prompt)
+print(response)

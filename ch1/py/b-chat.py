@@ -4,4 +4,5 @@ from langchain_core.messages import HumanMessage
 model = ChatOpenAI()
 prompt = [HumanMessage("What is the capital of France?")]
 
-model.invoke(prompt)
+response = model.invoke(prompt)
+print(response.content)

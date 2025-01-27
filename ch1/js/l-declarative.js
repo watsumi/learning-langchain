@@ -24,3 +24,11 @@ const response = await chatbot.invoke({
 });
 
 console.log(response);
+
+//streaming
+
+for await (const part of chatbot.stream({
+  question: 'Which model providers offer LLMs?',
+})) {
+  console.log(part);
+}

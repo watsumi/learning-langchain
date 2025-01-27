@@ -7,4 +7,5 @@ system_msg = SystemMessage(
 )
 human_msg = HumanMessage("What is the capital of France?")
 
-model.invoke([system_msg, human_msg])
+response = model.invoke([system_msg, human_msg])
+print(response.content)

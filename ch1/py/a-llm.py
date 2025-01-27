@@ -1,5 +1,6 @@
-from langchain_openai.llms import OpenAI
+from langchain_openai.chat_models import ChatOpenAI
 
-model = OpenAI(model="gpt-3.5-turbo-instruct")
+model = ChatOpenAI(model="gpt-3.5-turbo")
 
-model.invoke("The sky is")
+response = model.invoke("The sky is")
+print(response.content)

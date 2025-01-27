@@ -11,7 +11,7 @@ template = ChatPromptTemplate.from_messages(
     ]
 )
 
-model = ChatOpenAI()
+model = ChatOpenAI(model="gpt-3.5-turbo")
 
 # combine them in a function
 # @chain decorator adds the same Runnable interface for any function you write
@@ -25,4 +25,5 @@ def chatbot(values):
 
 # use it
 
-chatbot.invoke({"question": "Which model providers offer LLMs?"})
+response = chatbot.invoke({"question": "Which model providers offer LLMs?"})
+print(response.content)

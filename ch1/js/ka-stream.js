@@ -1,3 +1,16 @@
+import { ChatOpenAI } from '@langchain/openai';
+import { ChatPromptTemplate } from '@langchain/core/prompts';
+import { RunnableLambda } from '@langchain/core/runnables';
+
+const template = ChatPromptTemplate.fromMessages([
+  ['system', 'You are a helpful assistant.'],
+  ['human', '{question}'],
+]);
+
+const model = new ChatOpenAI({
+  model: 'gpt-3.5-turbo',
+});
+
 const chatbot = RunnableLambda.from(async function* (values) {
   const prompt = await template.invoke(values);
   for await (const token of await model.stream(prompt)) {

@@ -1,6 +1,6 @@
-from langchain_openai.llms import OpenAI
+from langchain_openai.chat_models import ChatOpenAI
 
-model = OpenAI()
+model = ChatOpenAI(model="gpt-3.5-turbo")
 
 completion = model.invoke("Hi there!")
 # Hi!

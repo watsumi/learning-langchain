@@ -1,6 +1,6 @@
-import { OpenAI } from '@langchain/openai';
+import { ChatOpenAI } from '@langchain/openai';
 
-const model = new OpenAI();
+const model = new ChatOpenAI();
 
 const response = await model.invoke('Hi there!');
 console.log(response);

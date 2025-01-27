@@ -18,4 +18,10 @@ chatbot = template | model
 
 # use it
 
-chatbot.invoke({"question": "Which model providers offer LLMs?"})
+response = chatbot.invoke({"question": "Which model providers offer LLMs?"})
+print(response.content)
+
+# streaming
+
+for part in chatbot.stream({"question": "Which model providers offer LLMs?"}):
+    print(part)
