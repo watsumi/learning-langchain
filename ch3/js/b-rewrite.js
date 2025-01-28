@@ -18,7 +18,7 @@ import { OpenAIEmbeddings } from '@langchain/openai';
 import { PGVectorStore } from '@langchain/community/vectorstores/pgvector';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { ChatOpenAI } from '@langchain/openai';
-
+import { RunnableLambda } from '@langchain/core/runnables';
 const connectionString =
   'postgresql://langchain:langchain@localhost:6024/langchain';
 // Load the document, split it into chunks
@@ -71,14 +71,13 @@ console.log(result);
 console.log('\n\nCall model again with rewritten query\n\n');
 
 const rewritePrompt = ChatPromptTemplate.fromTemplate(
-  `Provide a better search query for web search engine to answer the given question, end the queries with ’**’. Question: {x} Answer:`
+  `Provide a better search query for web search engine to answer the given question, end the queries with '**'. Question: {question} Answer:`
 );
 const rewriter = rewritePrompt.pipe(llm).pipe((message) => {
   return message.content.replaceAll('"', '').replaceAll('**');
 });
 const rewriterQA = RunnableLambda.from(async (input) => {
-  const newQuery = await rewriter.invoke(input); // fetch relevant documents
-  console.log('New query: ', newQuery);
+  const newQuery = await rewriter.invoke({ question: input }); // fetch relevant documents  console.log('New query: ', newQuery);
   const docs = await retriever.invoke(newQuery); // format prompt
   const formatted = await prompt.invoke({ context: docs, question: input }); // generate answer
   const answer = await llm.invoke(formatted);

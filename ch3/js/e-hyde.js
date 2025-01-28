@@ -18,6 +18,7 @@ import { OpenAIEmbeddings } from '@langchain/openai';
 import { PGVectorStore } from '@langchain/community/vectorstores/pgvector';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { ChatOpenAI } from '@langchain/openai';
+import { RunnableLambda } from '@langchain/core/runnables';
 
 const connectionString =
   'postgresql://langchain:langchain@localhost:6024/langchain';

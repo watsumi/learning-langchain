@@ -1,6 +1,7 @@
 import { cosineSimilarity } from '@langchain/core/utils/math';
 import { ChatOpenAI, OpenAIEmbeddings } from '@langchain/openai';
 import { PromptTemplate } from '@langchain/core/prompts';
+import { RunnableLambda } from '@langchain/core/runnables';
 
 const physicsTemplate = `You are a very smart physics professor. You are great     at answering questions about physics in a concise and easy-to-understand     manner. When you don't know the answer to a question, you admit that you don't know. Here is a question: {query}`;
 

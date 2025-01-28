@@ -1,4 +1,4 @@
-import { OpenAI } from '@langchain/openai';
+import { ChatOpenAI } from '@langchain/openai';
 import { SelfQueryRetriever } from 'langchain/retrievers/self_query';
 import { FunctionalTranslator } from '@langchain/core/structured_query';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory';
@@ -58,7 +58,7 @@ const docs = [
   }),
 ];
 
-const llm = new OpenAI({ modelName: 'gpt-3.5-turbo', temperature: 0 });
+const llm = new ChatOpenAI({ modelName: 'gpt-3.5-turbo', temperature: 0 });
 
 const embeddings = new OpenAIEmbeddings();
 
@@ -94,12 +94,15 @@ const fields = [
   },
 ];
 
+const attributeInfos = fields.map(
+  (field) => new AttributeInfo(field.name, field.description, field.type)
+);
 const description = 'Brief summary of a movie';
 const selfQueryRetriever = SelfQueryRetriever.fromLLM({
   llm,
   vectorStore,
   description,
-  fields,
+  attributeInfo: attributeInfos,
   /**
    * We need to use a translator that translates the queries into a
    * filter format that the vector store can understand. LangChain provides one

@@ -9,6 +9,8 @@
         "duck-duck-scrape": "^2.2.7",
         "expr-eval": "^2.0.2",
         "langchain": "^0.3.12",
-        "pg": "^8.13.1"
+        "pg": "^8.13.1",
+        "sqlite3": "^5.1.7",
+        "typeorm": "^0.3.20"
     }
 }

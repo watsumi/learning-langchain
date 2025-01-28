@@ -6,12 +6,16 @@ import { InMemoryStore } from '@langchain/core/stores';
 import { TextLoader } from 'langchain/document_loaders/fs/text';
 import { Document } from '@langchain/core/documents';
 import { PGVectorStore } from '@langchain/community/vectorstores/pgvector';
+import { ChatOpenAI } from '@langchain/openai';
+import { PromptTemplate } from '@langchain/core/prompts';
+import { RunnableSequence } from '@langchain/core/runnables';
+import { StringOutputParser } from '@langchain/core/output_parsers';
 
 const connectionString =
   'postgresql://langchain:langchain@localhost:6024/langchain';
 const collectionName = 'summaries';
 
-const textLoader = new TextLoader('../test.txt');
+const textLoader = new TextLoader('./test.txt');
 const parentDocuments = await textLoader.load();
 const splitter = new RecursiveCharacterTextSplitter({
   chunkSize: 10000,
@@ -54,14 +58,18 @@ const summaryDocs = summaries.map((summary, i) => {
 const byteStore = new InMemoryStore();
 
 // vector store for the summaries
-const vectorStore = await PGVectorStore.fromDocuments(docs, model, {
-  postgresConnectionOptions: {
-    connectionString,
-  },
-});
+const vectorStore = await PGVectorStore.fromDocuments(
+  docs,
+  new OpenAIEmbeddings(),
+  {
+    postgresConnectionOptions: {
+      connectionString,
+    },
+  }
+);
 
 const retriever = new MultiVectorRetriever({
-  vectorstore,
+  vectorstore: vectorStore,
   byteStore,
   idKey,
 });

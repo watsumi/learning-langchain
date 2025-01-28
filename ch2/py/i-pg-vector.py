@@ -26,7 +26,7 @@ import uuid
 connection = "postgresql+psycopg://langchain:langchain@localhost:6024/langchain"
 
 # Load the document, split it into chunks
-raw_documents = TextLoader('./test.txt').load()
+raw_documents = TextLoader('./test.txt', encoding="utf-8").load()
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=1000, chunk_overlap=200)
 documents = text_splitter.split_documents(raw_documents)

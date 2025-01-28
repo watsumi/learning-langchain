@@ -6,7 +6,7 @@
 - To install run:
 
 ```bash
-pip install ragatouille
+pip install -U ragatouille transformers
 ```
 """
 from ragatouille import RAGPretrainedModel

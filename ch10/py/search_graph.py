@@ -1,6 +1,6 @@
 from typing import List, TypedDict
 
-from langchain_core import Document
+from langchain_core.documents import Document
 from langchain_community.tools import DuckDuckGoSearchRun
 from langgraph.graph import END, StateGraph, START
 
@@ -69,7 +69,7 @@ def retrieve(state):
     question = state["question"]
 
     # Retrieval
-    documents = retriever.get_relevant_documents(question)
+    documents = retriever.invoke(question)
     return {"documents": documents, "question": question}
 
 

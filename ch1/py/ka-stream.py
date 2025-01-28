@@ -17,7 +17,7 @@ template = ChatPromptTemplate.from_messages(
 @chain
 def chatbot(values):
     prompt = template.invoke(values)
-    for token in model.invoke(prompt):
+    for token in model.stream(prompt):
         yield token
 
 

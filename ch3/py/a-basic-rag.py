@@ -27,7 +27,7 @@ from langchain_core.runnables import chain
 connection = "postgresql+psycopg://langchain:langchain@localhost:6024/langchain"
 
 # Load the document, split it into chunks
-raw_documents = TextLoader('./test.txt').load()
+raw_documents = TextLoader('./test.txt', encoding='utf-8').load()
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=1000, chunk_overlap=200)
 documents = text_splitter.split_documents(raw_documents)
@@ -52,10 +52,10 @@ prompt = ChatPromptTemplate.from_template(
     """Answer the question based only on the following context: {context} Question: {question} """
 )
 llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
-chain = prompt | llm
+llm_chain = prompt | llm
 
 # answer the question based on relevant documents
-result = chain.invoke({"context": docs, "question": query})
+result = llm_chain.invoke({"context": docs, "question": query})
 
 print(result)
 print("\n\n")

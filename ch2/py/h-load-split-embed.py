@@ -3,7 +3,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 
 # Load the document
-loader = TextLoader("./test.txt")
+loader = TextLoader("./test.txt", encoding="utf-8")
 doc = loader.load()
 
 # Split the document

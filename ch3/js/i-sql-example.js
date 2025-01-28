@@ -26,6 +26,7 @@ const db = await SqlDatabase.fromDataSourceParams({
 //test that the db is working
 await db.run('SELECT * FROM Artist LIMIT 10;');
 
+const llm = new ChatOpenAI({ modelName: 'gpt-4o', temperature: 0 });
 // convert question to sql query
 const writeQuery = await createSqlQueryChain({ llm, db, dialect: 'sqlite' });
 // execute query
@@ -33,5 +34,7 @@ const executeQuery = new QuerySqlTool(db);
 // combined
 const chain = writeQuery.pipe(executeQuery);
 
-const result = await chain.invoke('How many employees are there?');
+const result = await chain.invoke({
+  question: 'How many employees are there?',
+});
 console.log(result);
