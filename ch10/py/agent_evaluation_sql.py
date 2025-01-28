@@ -26,7 +26,7 @@ def predict_sql_agent_answer(example: dict):
 
 
 # Grade prompt
-grade_prompt_answer_accuracy = prompt = hub.pull(
+grade_prompt_answer_accuracy = hub.pull(
     "langchain-ai/rag-answer-vs-reference")
 
 
@@ -112,7 +112,7 @@ experiment_results = evaluate(
 
 
 """
-Test agent trajectory
+Agent trajectory evaluation
 """
 
 
