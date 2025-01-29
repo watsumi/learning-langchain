@@ -1,4 +1,4 @@
-from agent_sql_graph import graph
+from agent_sql_graph import builder
 from langchain import hub
 from langchain_openai import ChatOpenAI
 from langsmith.evaluation import evaluate
@@ -119,6 +119,7 @@ Agent trajectory evaluation
 def predict_sql_agent_messages(example: dict):
     """Use this for answer evaluation"""
     msg = {"messages": ("user", example["input"])}
+    graph = builder.compile()
     messages = graph.invoke(msg, config)
     return {"response": messages}
 
