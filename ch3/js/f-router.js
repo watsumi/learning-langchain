@@ -1,5 +1,6 @@
 import { ChatOpenAI } from '@langchain/openai';
 import { z } from 'zod';
+import { ChatPromptTemplate } from '@langchain/core/prompts';
 
 const routeQuery = z
   .object({

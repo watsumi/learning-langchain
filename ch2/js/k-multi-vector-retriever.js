@@ -33,7 +33,7 @@ const chain = RunnableSequence.from([
   { doc: (doc) => doc.pageContent },
   prompt,
   llm,
-  new StrOutputParser(),
+  new StringOutputParser(),
 ]);
 
 // batch summarization chain across the chunks

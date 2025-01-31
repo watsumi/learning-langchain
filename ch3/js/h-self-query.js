@@ -2,7 +2,9 @@ import { ChatOpenAI } from '@langchain/openai';
 import { SelfQueryRetriever } from 'langchain/retrievers/self_query';
 import { FunctionalTranslator } from '@langchain/core/structured_query';
 import { MemoryVectorStore } from 'langchain/vectorstores/memory';
-
+import { Document } from 'langchain/document';
+import { AttributeInfo } from 'langchain/chains/query_constructor';
+import { OpenAIEmbeddings } from '@langchain/openai';
 /**
  * First, we create a bunch of documents. You can load your own documents here instead.
  * Each document has a pageContent and a metadata field. Make sure your metadata matches the AttributeInfo below.

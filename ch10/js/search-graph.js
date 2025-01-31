@@ -11,7 +11,7 @@ import { Document } from '@langchain/core/documents';
 const prompt = await hub.pull('rlm/rag-prompt');
 const llm = new ChatOpenAI({ modelName: 'gpt-4', temperature: 0 }); // Fixed model name
 const ragChain = prompt.pipe(llm).pipe(new StringOutputParser());
-const webSearchTool = DuckDuckGoSearch();
+const webSearchTool = new DuckDuckGoSearch();
 // Question rewriting prompt
 const rewritePrompt = ChatPromptTemplate.fromMessages([
   [
@@ -124,6 +124,8 @@ const workflow = new StateGraph(GraphState)
 
 const graph = workflow.compile();
 
-await graph.invoke({
+const result = await graph.invoke({
   question: 'What are the Top 5 LangGraph Agents in Production 2024?',
 });
+
+console.log(result);

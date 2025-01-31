@@ -24,7 +24,7 @@ const promptRouter = RunnableLambda.from(async (query) => {
   console.log(
     `Using ${mostSimilar === promptTemplates[0] ? 'PHYSICS' : 'MATH'}`
   );
-  return PromptTemplate.fromTemplate(mostSimilar);
+  return PromptTemplate.fromTemplate(mostSimilar).invoke({ query });
 });
 
 const semanticRouter = promptRouter.pipe(
