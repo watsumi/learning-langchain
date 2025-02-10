@@ -7,7 +7,7 @@ class Joke(BaseModel):
     punchline: str = Field(description="The punchline to the joke")
 
 
-model = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0)
+model = ChatOpenAI(model="gpt-4o", temperature=0)
 model = model.with_structured_output(Joke)
 
 result = model.invoke("Tell me a joke about cats")

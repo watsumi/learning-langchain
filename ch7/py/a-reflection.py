@@ -78,4 +78,6 @@ initial_state = {
 
 # Run the graph
 for output in graph.stream(initial_state):
-    print("\nNew message:", output["messages"][-1].content[:100], "...")
+    message_type = "generate" if "generate" in output else "reflect"
+    print("\nNew message:", output[message_type]
+          ["messages"][-1].content[:100], "...")

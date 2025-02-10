@@ -1,13 +1,13 @@
 import {
   StateGraph,
-  StateType,
   Annotation,
   messagesStateReducer,
   START,
-} from "@langchain/langgraph";
+  END,
+} from '@langchain/langgraph';
 
-import { ChatOpenAI } from "@langchain/openai";
-import { HumanMessage } from "@langchain/core/messages";
+import { ChatOpenAI } from '@langchain/openai';
+import { HumanMessage } from '@langchain/core/messages';
 
 const model = new ChatOpenAI();
 
@@ -28,14 +28,14 @@ async function chatbot(state) {
 }
 
 const builder = new StateGraph(State)
-  .addNode("chatbot", chatbot)
-  .addEdge(START, "chatbot")
-  .addEdge("chatbot", END);
+  .addNode('chatbot', chatbot)
+  .addEdge(START, 'chatbot')
+  .addEdge('chatbot', END);
 
 const graph = builder.compile();
 
 // Example usage
-const input = { messages: [new HumanMessage("hi!")] };
+const input = { messages: [new HumanMessage('hi!')] };
 for await (const chunk of await graph.stream(input)) {
   console.log(chunk);
 }

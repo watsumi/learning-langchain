@@ -1,4 +1,4 @@
-import { StateGraph, START, Annotation } from "@langchain/langgraph";
+import { StateGraph, START, Annotation } from '@langchain/langgraph';
 
 const StateAnnotation = Annotation.Root({
   foo: Annotation(),
@@ -12,11 +12,12 @@ const SubgraphStateAnnotation = Annotation.Root({
 
 // Define subgraph
 const subgraphNode = async (state) => {
-  return { bar: state.bar + "baz" };
+  return { bar: state.bar + 'baz' };
 };
 
 const subgraph = new StateGraph(SubgraphStateAnnotation)
-  .addNode("subgraph", subgraphNode)
+  .addNode('subgraph', subgraphNode)
+  .addEdge(START, 'subgraph')
   // Additional subgraph setup would go here
   .compile();
 
@@ -33,13 +34,13 @@ const subgraphWrapperNode = async (state) => {
 };
 
 const parentGraph = new StateGraph(StateAnnotation)
-  .addNode("subgraph", subgraphWrapperNode)
-  .addEdge(START, "subgraph")
+  .addNode('subgraph', subgraphWrapperNode)
+  .addEdge(START, 'subgraph')
   // Additional parent graph setup would go here
   .compile();
 
 // Example usage
 
-const initialState = { foo: "hello" };
+const initialState = { foo: 'hello' };
 const result = await parentGraph.invoke(initialState);
 console.log(`Result: ${JSON.stringify(result)}`); // Should transform foo->bar, append "baz", then transform bar->foo

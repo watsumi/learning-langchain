@@ -2,15 +2,15 @@ import {
   AIMessage,
   SystemMessage,
   HumanMessage,
-} from "@langchain/core/messages";
-import { ChatOpenAI } from "@langchain/openai";
+} from '@langchain/core/messages';
+import { ChatOpenAI } from '@langchain/openai';
 import {
   StateGraph,
   Annotation,
   messagesStateReducer,
   START,
   END,
-} from "@langchain/langgraph";
+} from '@langchain/langgraph';
 
 const model = new ChatOpenAI();
 
@@ -21,7 +21,7 @@ const annotation = Annotation.Root({
 const generatePrompt = new SystemMessage(
   `You are an essay assistant tasked with writing excellent 3-paragraph essays.
 Generate the best essay possible for the user's request.
-If the user provides critique, respond with a revised version of your previous attempts.`,
+If the user provides critique, respond with a revised version of your previous attempts.`
 );
 
 async function generate(state) {
@@ -31,7 +31,7 @@ async function generate(state) {
 
 const reflectionPrompt = new SystemMessage(
   `You are a teacher grading an essay submission. Generate critique and recommendations for the user's submission.
-Provide detailed recommendations, including requests for length, depth, style, etc.`,
+Provide detailed recommendations, including requests for length, depth, style, etc.`
 );
 
 async function reflect(state) {
@@ -58,16 +58,16 @@ function shouldContinue(state) {
     // End after 3 iterations, each with 2 messages
     return END;
   } else {
-    return "reflect";
+    return 'reflect';
   }
 }
 
 const builder = new StateGraph(annotation)
-  .addNode("generate", generate)
-  .addNode("reflect", reflect)
-  .addEdge(START, "generate")
-  .addConditionalEdges("generate", shouldContinue)
-  .addEdge("reflect", "generate");
+  .addNode('generate', generate)
+  .addNode('reflect', reflect)
+  .addEdge(START, 'generate')
+  .addConditionalEdges('generate', shouldContinue)
+  .addEdge('reflect', 'generate');
 
 const graph = builder.compile();
 
@@ -75,15 +75,18 @@ const graph = builder.compile();
 const initialState = {
   messages: [
     new HumanMessage(
-      "Write an essay about the relevance of 'The Little Prince' today.",
+      "Write an essay about the relevance of 'The Little Prince' today."
     ),
   ],
 };
 
-for await (const output of graph.stream(initialState)) {
+for await (const output of await graph.stream(initialState)) {
+  const messageType = output.generate ? 'generate' : 'reflect';
   console.log(
-    "\nNew message:",
-    output.messages[output.messages.length - 1].content.slice(0, 100),
-    "...",
+    '\nNew message:',
+    output[messageType].messages[
+      output[messageType].messages.length - 1
+    ].content.slice(0, 100),
+    '...'
   );
 }

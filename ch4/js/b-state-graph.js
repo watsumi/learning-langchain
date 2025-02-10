@@ -3,9 +3,10 @@ import {
   Annotation,
   messagesStateReducer,
   START,
-} from "@langchain/langgraph";
-import { ChatOpenAI } from "@langchain/openai";
-import { HumanMessage } from "@langchain/core/messages";
+  END,
+} from '@langchain/langgraph';
+import { ChatOpenAI } from '@langchain/openai';
+import { HumanMessage } from '@langchain/core/messages';
 
 const State = {
   messages: Annotation({
@@ -23,14 +24,14 @@ async function chatbot(state) {
   return { messages: answer };
 }
 
-builder = builder.addNode("chatbot", chatbot);
+builder = builder.addNode('chatbot', chatbot);
 
-builder = builder.addEdge(START, "chatbot").addEdge("chatbot", END);
+builder = builder.addEdge(START, 'chatbot').addEdge('chatbot', END);
 
 let graph = builder.compile();
 
 // Run the graph
-const input = { messages: [new HumanMessage("hi!")] };
+const input = { messages: [new HumanMessage('hi!')] };
 for await (const chunk of await graph.stream(input)) {
   console.log(chunk);
 }
