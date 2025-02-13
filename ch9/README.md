@@ -20,10 +20,10 @@ Supabase is used as the vector store for the examples. To get your supabase keys
 
 - Register for a supabase account, go to [supabase.com](https://supabase.com/) and sign up.
 - Once you have an account, create a new project then navigate to the settings section.
-- In the settings section, navigate to the API section to see your keys.
+- In the settings section, navigate to the Data API section to see your keys.
 - Copy the project url and `service_role` key and add them to the `.env` file as values for `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`.
 
-Once you’ve created a database, run the following SQL to set up `pgvector` and create the necessary table and functions:
+- Navigate to SQL Editor, run the following SQL to set up `pgvector` and create the necessary table and functions:
 
 ```sql
 -- Enable the pgvector extension to work with embedding vectors
@@ -31,7 +31,7 @@ create extension vector;
 
 -- Create a table to store your documents
 create table documents (
-  id bigserial primary key,
+  id uuid primary key,
   content text, -- corresponds to Document.pageContent
   metadata jsonb, -- corresponds to Document.metadata
   embedding vector(1536) -- 1536 works for OpenAI embeddings, change if needed
@@ -43,7 +43,7 @@ create function match_documents (
   match_count int DEFAULT null,
   filter jsonb DEFAULT '{}'
 ) returns table (
-  id bigint,
+  id uuid,
   content text,
   metadata jsonb,
   embedding jsonb,

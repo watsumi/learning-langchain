@@ -16,4 +16,4 @@ structured_llm = llm.with_structured_output(AnswerWithJustification)
 
 response = structured_llm.invoke(
     "What weighs more, a pound of bricks or a pound of feathers")
-print(response.content)
+print(response)

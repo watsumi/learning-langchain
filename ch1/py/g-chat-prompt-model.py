@@ -25,4 +25,4 @@ prompt = template.invoke(
     }
 )
 
-model.invoke(prompt)
+print(model.invoke(prompt))

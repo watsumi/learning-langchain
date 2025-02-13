@@ -6,6 +6,9 @@ from typing import Any, Literal, Optional, Union
 
 from langchain_core.documents import Document
 
+from typing import Any, Literal, Optional
+
+
 
 def _generate_uuid(page_content: str) -> str:
     """Generate a UUID for a document based on page content."""
