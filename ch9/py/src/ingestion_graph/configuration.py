@@ -7,10 +7,7 @@ from typing import Annotated, Literal, Optional, Type, TypeVar, Any
 from langchain_core.runnables import RunnableConfig, ensure_config
 
 
-# This file contains sample documents to index, based on the following LangChain and LangGraph documentation pages:
-# - https://python.langchain.com/v0.3/docs/concepts/
-# - https://langchain-ai.github.io/langgraph/concepts/low_level/
-DEFAULT_DOCS_FILE = "./docSplits.json"
+DEFAULT_DOCS_FILE = "src/docSplits.json"
 
 
 @dataclass(kw_only=True)

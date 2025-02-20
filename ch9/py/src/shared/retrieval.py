@@ -16,13 +16,11 @@ from ingestion_graph.configuration import IndexConfiguration
 def make_text_encoder(model: str) -> Embeddings:
     """Connect to the configured text encoder."""
     provider, model = model.split("/", maxsplit=1)
-    match provider:
-        case "openai":
-            from langchain_openai import OpenAIEmbeddings
-
-            return OpenAIEmbeddings(model=model)
-        case _:
-            raise ValueError(f"Unsupported embedding provider: {provider}")
+    if provider == "openai":
+        from langchain_openai import OpenAIEmbeddings
+        return OpenAIEmbeddings(model=model)
+    else:
+        raise ValueError(f"Unsupported embedding provider: {provider}")
 
 
 @contextmanager
@@ -62,18 +60,15 @@ def make_retriever(
     """Create a retriever for the agent, based on the current configuration."""
     configuration = IndexConfiguration.from_runnable_config(config)
     embedding_model = make_text_encoder(configuration.embedding_model)
-    match configuration.retriever_provider:
-        case "supabase":
-            with make_supabase_retriever(configuration, embedding_model) as retriever:
-                yield retriever
-
-        case "chroma":
-            with make_chroma_retriever(configuration, embedding_model) as retriever:
-                yield retriever
-
-        case _:
-            raise ValueError(
-                "Unrecognized retriever_provider in configuration. "
-                f"Expected one of: {', '.join(Configuration.__annotations__['retriever_provider'].__args__)}\n"
-                f"Got: {configuration.retriever_provider}"
-            )
+    if configuration.retriever_provider == "supabase":
+        with make_supabase_retriever(configuration, embedding_model) as retriever:
+            yield retriever
+    elif configuration.retriever_provider == "chroma":
+        with make_chroma_retriever(configuration, embedding_model) as retriever:
+            yield retriever
+    else:
+        raise ValueError(
+            "Unrecognized retriever_provider in configuration. "
+            f"Expected one of: {', '.join(Configuration.__annotations__['retriever_provider'].__args__)}\n"
+            f"Got: {configuration.retriever_provider}"
+        )

@@ -6,23 +6,24 @@ from langgraph.graph import StateGraph, START, END
 from ingestion_graph.configuration import IndexConfiguration
 from ingestion_graph.state import IndexState, reduce_docs
 
-from shared.retrieval import init_supabase_retriever
+from shared.retrieval import make_retriever
 
 
-async def ingest_docs(state: IndexState, config: Optional[RunnableConfig] = None)  -> dict[str, str]:
+async def ingest_docs(state: IndexState, config: Optional[RunnableConfig] = None) -> dict[str, str]:
     if not config:
         raise ValueError("Configuration required to run index_docs.")
 
     configuration = IndexConfiguration.from_runnable_config(config)
     docs = state["docs"]
-    print(configuration)
     if not docs:
         with open(configuration.docs_file, encoding="utf-8") as file_content:
             serialized_docs = json.loads(file_content.read())
             docs = reduce_docs([], serialized_docs)
-    
-    retriever = init_supabase_retriever()
-    await retriever.aadd_documents(docs)
+    else:
+        docs = reduce_docs([], docs)
+
+    with make_retriever(configuration) as retriever:
+        await retriever.aadd_documents(docs)
 
     return {"docs": "delete"}
 
