@@ -21,6 +21,7 @@ dependencies = [
     "langsmith>=0.3.2",
     "langgraph-checkpoint-sqlite>=2.0.3",
     "duckduckgo-search>=7.3.0",
+    "langgraph-cli>=0.1.73"
 ]
 
 [build-system]
@@ -32,3 +33,6 @@ packages = []
 
 [tool.setuptools.package-data]
 "*" = ["py.typed"]
+
+[project.scripts]
+langgraph-dev = "langgraph.cli:dev_command --config ch9/py/langgraph.json --verbose"
