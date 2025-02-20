@@ -1,17 +1,33 @@
 import { Annotation } from '@langchain/langgraph';
 import { RunnableConfig } from '@langchain/core/runnables';
 
-// This file contains sample documents to index, based on the following LangChain and LangGraph documentation pages:
-const DEFAULT_DOCS_FILE = './docSplits.json';
+// This path points to the directory containing the documents to index.
+const DEFAULT_DOCS_PATH = 'src/docSplits.json';
 
 /**
  * The configuration for the indexing process.
  */
 export const IndexConfigurationAnnotation = Annotation.Root({
   /**
-   * Path to a JSON file containing default documents to index.
+   * Path to folder containing default documents to index.
    */
-  docsFile: Annotation<string>,
+  docsPath: Annotation<string>,
+
+  /**
+   * Name of the openai embedding model to use. Must be a valid embedding model name.
+   */
+  embeddingModel: Annotation<'text-embedding-3-small'>,
+
+  /**
+   * The vector store provider to store the embeddings.
+   * Options are 'supabase', 'chroma'.
+   */
+  retrieverProvider: Annotation<'supabase' | 'chroma'>,
+
+  /**
+   * Whether to index sample documents specified in the docsPath.
+   */
+  useSampleDocs: Annotation<boolean>,
 });
 
 /**
@@ -27,6 +43,9 @@ export function ensureIndexConfiguration(
     typeof IndexConfigurationAnnotation.State
   >;
   return {
-    docsFile: configurable.docsFile || DEFAULT_DOCS_FILE,
+    docsPath: configurable.docsPath || DEFAULT_DOCS_PATH,
+    embeddingModel: configurable.embeddingModel || 'text-embedding-3-small',
+    retrieverProvider: configurable.retrieverProvider || 'supabase',
+    useSampleDocs: configurable.useSampleDocs || false,
   };
 }

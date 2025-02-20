@@ -5,18 +5,24 @@ import {
   MessagesAnnotation,
 } from '@langchain/langgraph';
 import { AgentStateAnnotation } from './state.js';
-import { makeSupabaseRetriever } from '../shared/retrieval.js';
+import { makeRetriever, makeSupabaseRetriever } from '../shared/retrieval.js';
 import { ChatOpenAI } from '@langchain/openai';
 import { formatDocs } from './utils.js';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { pull } from 'langchain/hub';
-import { BaseMessage, HumanMessage } from '@langchain/core/messages';
+import { AIMessage, BaseMessage, HumanMessage } from '@langchain/core/messages';
 import { z } from 'zod';
-
+import { RunnableConfig } from '@langchain/core/runnables';
+import { loadChatModel } from '../shared/utils.js';
+import {
+  AgentConfigurationAnnotation,
+  ensureAgentConfiguration,
+} from './configuration.js';
 async function checkQueryType(
   state: typeof AgentStateAnnotation.State,
+  config: RunnableConfig
 ): Promise<{
-  route: 'retrieveDocuments' | typeof END;
+  route: 'retrieve' | 'direct';
   messages?: BaseMessage[];
 }> {
   //schema for routing
@@ -25,10 +31,8 @@ async function checkQueryType(
     directAnswer: z.string().optional(),
   });
 
-  const model = new ChatOpenAI({
-    model: 'gpt-4',
-    temperature: 0,
-  }).withStructuredOutput(schema);
+  const configuration = ensureAgentConfiguration(config);
+  const model = await loadChatModel(configuration.queryModel);
 
   const routingPrompt = ChatPromptTemplate.fromMessages([
     [
@@ -42,53 +46,60 @@ async function checkQueryType(
     query: state.query,
   });
 
-  const response = await model.invoke(formattedPrompt);
+  const response = await model
+    .withStructuredOutput(schema)
+    .invoke(formattedPrompt.toString());
+
   const route = response.route;
 
-  if (route === 'retrieve') {
-    return { route: 'retrieveDocuments' };
-  } else {
-    const directAnswer = response.directAnswer ?? '';
+  return { route };
+}
 
-    return {
-      route: END,
-      messages: [new HumanMessage(directAnswer)],
-    };
-  }
+async function answerQueryDirectly(
+  state: typeof AgentStateAnnotation.State,
+  config: RunnableConfig
+): Promise<typeof AgentStateAnnotation.Update> {
+  const configuration = ensureAgentConfiguration(config);
+  const model = await loadChatModel(configuration.queryModel);
+  const userHumanMessage = new HumanMessage(state.query);
+
+  const response = await model.invoke([userHumanMessage]);
+  return { messages: [userHumanMessage, response] };
 }
 
 async function routeQuery(
-  state: typeof AgentStateAnnotation.State,
-): Promise<'retrieveDocuments' | typeof END> {
+  state: typeof AgentStateAnnotation.State
+): Promise<'retrieveDocuments' | 'directAnswer'> {
   const route = state.route;
   if (!route) {
     throw new Error('Route is not set');
   }
-
-  if (route === 'retrieveDocuments') {
+  if (route === 'retrieve') {
     return 'retrieveDocuments';
+  } else if (route === 'direct') {
+    return 'directAnswer';
   } else {
-    return END;
+    throw new Error('Invalid route');
   }
 }
 
 async function retrieveDocuments(
   state: typeof AgentStateAnnotation.State,
+  config: RunnableConfig
 ): Promise<typeof AgentStateAnnotation.Update> {
-  const retriever = await makeSupabaseRetriever();
-  const response = await retriever.invoke(state.query);
-
+  const retriever = await makeRetriever(config);
+  const response = await retriever.invoke(state.query, config);
   return { documents: response };
 }
 
 async function generateResponse(
   state: typeof AgentStateAnnotation.State,
+  config: RunnableConfig
 ): Promise<typeof AgentStateAnnotation.Update> {
   const context = formatDocs(state.documents);
-  const model = new ChatOpenAI({
-    model: 'gpt-4o',
-    temperature: 0,
-  });
+  const configuration = ensureAgentConfiguration(config);
+
+  const model = await loadChatModel(configuration.queryModel);
   const promptTemplate = await pull<ChatPromptTemplate>('rlm/rag-prompt');
 
   const formattedPrompt = await promptTemplate.invoke({
@@ -96,24 +107,36 @@ async function generateResponse(
     question: state.query,
   });
 
-  const messages = [
-    new HumanMessage(formattedPrompt.toString()),
-    ...state.messages,
-  ];
+  const userHumanMessage = new HumanMessage(state.query);
 
-  const response = await model.invoke(messages);
+  // Create a human message with the formatted prompt that includes context
+  const formattedPromptMessage = new HumanMessage(formattedPrompt.toString());
 
-  return { messages: response };
+  const messageHistory = [...state.messages, formattedPromptMessage];
+
+  // Let MessagesAnnotation handle the message history
+  const response = await model.invoke(messageHistory);
+
+  // Return both the current query and the AI response to be handled by MessagesAnnotation's reducer
+  return { messages: [userHumanMessage, response] };
 }
 
-const builder = new StateGraph(AgentStateAnnotation)
+const builder = new StateGraph(
+  AgentStateAnnotation,
+  AgentConfigurationAnnotation
+)
   .addNode('retrieveDocuments', retrieveDocuments)
   .addNode('generateResponse', generateResponse)
   .addNode('checkQueryType', checkQueryType)
+  .addNode('directAnswer', answerQueryDirectly)
   .addEdge(START, 'checkQueryType')
-  .addConditionalEdges('checkQueryType', routeQuery, ['retrieveDocuments', END])
+  .addConditionalEdges('checkQueryType', routeQuery, [
+    'retrieveDocuments',
+    'directAnswer',
+  ])
   .addEdge('retrieveDocuments', 'generateResponse')
-  .addEdge('generateResponse', END);
+  .addEdge('generateResponse', END)
+  .addEdge('directAnswer', END);
 
 export const graph = builder.compile().withConfig({
   runName: 'RetrievalGraph',

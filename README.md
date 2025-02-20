@@ -1,8 +1,8 @@
 # Learning LangChain Code Examples
 
-This repository contains code examples (in python and javascript) from each chapter of the book "Learning LangChain" published by O'Reilly Media.
+This repository contains code examples (in python and javascript) from each chapter of the book ["Learning LangChain: Building AI and LLM Applications with LangChain and LangGraph"](https://www.oreilly.com/library/view/learning-langchain/9781098167271/) published by O'Reilly Media.
 
-To run the examples, you can clone the repository and run the examples in your preferred language.
+To run the examples, you can clone the repository and run the examples in your preferred language folders.
 
 ## Quick Start
 
