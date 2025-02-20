@@ -1,6 +1,6 @@
 """State management for the index graph."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Annotated
 
 from langchain_core.documents import Document
@@ -18,5 +18,9 @@ class IndexState:
     these documents.
     """
 
-    docs: Annotated[list[Document], reduce_docs]
-    """A list of documents that the agent can index."""
+    docs: Annotated[list[Document], reduce_docs] = field(
+        default_factory=list,
+        metadata={
+            "description": "A list of documents that the agent can index."
+        },
+    )

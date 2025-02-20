@@ -2,7 +2,7 @@ import { Annotation } from '@langchain/langgraph';
 import { RunnableConfig } from '@langchain/core/runnables';
 
 // This path points to the directory containing the documents to index.
-const DEFAULT_DOCS_PATH = './docSplits.json';
+const DEFAULT_DOCS_PATH = 'src/sample_docs.json';
 
 /**
  * The configuration for the indexing process.

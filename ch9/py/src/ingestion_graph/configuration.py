@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field, fields
-from typing import Optional, Type, TypeVar, TypedDict
+from typing import Annotated, Literal, Optional, Type, TypeVar, Any
 from langchain_core.runnables import RunnableConfig, ensure_config
 
 
@@ -25,6 +25,33 @@ class IndexConfiguration:
         default=DEFAULT_DOCS_FILE,
         metadata={
             "description": "Path to a JSON file containing default documents to index."
+        },
+    )
+
+    embedding_model: Annotated[
+        str,
+        {"__template_metadata__": {"kind": "embeddings"}},
+    ] = field(
+        default="openai/text-embedding-3-small",
+        metadata={
+            "description": "Name of the embedding model to use. Must be a valid embedding model name."
+        },
+    )
+
+    retriever_provider: Annotated[
+        Literal["supabase", "chroma"],
+        {"__template_metadata__": {"kind": "retriever"}},
+    ] = field(
+        default="chroma",
+        metadata={
+            "description": "The vector store provider to use for retrieval. Options are 'supabase', or 'chroma'."
+        },
+    )
+
+    search_kwargs: dict[str, Any] = field(
+        default_factory=dict,
+        metadata={
+            "description": "Additional keyword arguments to pass to the search function of the retriever."
         },
     )
 
