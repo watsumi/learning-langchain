@@ -24,7 +24,8 @@
 		"pg": "^8.13.1",
 		"sqlite3": "^5.1.7",
 		"typeorm": "^0.3.20",
-		"uuid": "^11.1.0"
+		"uuid": "^11.1.0",
+		"zod": "^4.0.17"
 	},
 	"devDependencies": {
 		"@types/pdf-parse": "^1.1.4"

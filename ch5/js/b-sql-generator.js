@@ -7,7 +7,8 @@ import {
   START,
   END,
 } from "@langchain/langgraph";
-
+import * as dotenv from "dotenv/config";
+dotenv;
 // useful to generate SQL query
 const modelLowTemp = new ChatOpenAI({ temperature: 0.1 });
 // useful to generate natural language outputs
@@ -21,7 +22,7 @@ const annotation = Annotation.Root({
 });
 
 const generatePrompt = new SystemMessage(
-  "You are a helpful data analyst, who generates SQL queries for users based on their questions.",
+  "You are a helpful data analyst, who generates SQL queries for users based on their questions."
 );
 
 async function generateSql(state) {
@@ -36,7 +37,7 @@ async function generateSql(state) {
 }
 
 const explainPrompt = new SystemMessage(
-  "You are a helpful data analyst, who explains SQL queries to users.",
+  "You are a helpful data analyst, who explains SQL queries to users."
 );
 
 async function explainSql(state) {

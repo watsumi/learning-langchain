@@ -1,4 +1,4 @@
-import { ChatOpenAI } from "langchain-openai";
+import { ChatOpenAI } from "@langchain/openai";
 import {
   StateGraph,
   Annotation,
@@ -7,7 +7,8 @@ import {
   END,
 } from "@langchain/langgraph";
 import { z } from "zod";
-
+import * as dotenv from "dotenv/config";
+dotenv;
 // Define decision schema
 const SupervisorDecision = z.object({
   next: z.enum(["researcher", "coder", "FINISH"]),
@@ -23,11 +24,11 @@ const agents = ["researcher", "coder"];
 
 // Define system prompts
 const systemPromptPart1 = `You are a supervisor tasked with managing a conversation between the following workers: ${agents.join(
-  ", ",
+  ", "
 )}. Given the following user request, respond with the worker to act next. Each worker will perform a task and respond with their results and status. When finished, respond with FINISH.`;
 
 const systemPromptPart2 = `Given the conversation above, who should act next? Or should we FINISH? Select one of: ${agents.join(
-  ", ",
+  ", "
 )}, FINISH`;
 
 // Define supervisor
@@ -80,7 +81,7 @@ const graph = new StateGraph(StateAnnotation)
   .addEdge(START, "supervisor")
   // Route to one of the agents or exit based on the supervisor's decision
   .addConditionalEdges("supervisor", async (state) =>
-    state.next === "FINISH" ? END : state.next,
+    state.next === "FINISH" ? END : state.next
   )
   .addEdge("researcher", "supervisor")
   .addEdge("coder", "supervisor")
@@ -98,14 +99,15 @@ const initialState = {
   next: "supervisor",
 };
 
-for await (const output of graph.stream(initialState)) {
+const stream = await graph.stream(initialState);
+for await (const output of stream) {
   console.log(`\nStep decision: ${output.next || "N/A"}`);
   if (output.messages) {
     console.log(
       `Response: ${output.messages[output.messages.length - 1].content.slice(
         0,
-        100,
-      )}...`,
+        100
+      )}...`
     );
   }
 }

@@ -2,16 +2,17 @@ import {
   AIMessage,
   SystemMessage,
   HumanMessage,
-} from '@langchain/core/messages';
-import { ChatOpenAI } from '@langchain/openai';
+} from "@langchain/core/messages";
+import { ChatOpenAI } from "@langchain/openai";
 import {
   StateGraph,
   Annotation,
   messagesStateReducer,
   START,
   END,
-} from '@langchain/langgraph';
-
+} from "@langchain/langgraph";
+import * as dotenv from "dotenv/config";
+dotenv;
 const model = new ChatOpenAI();
 
 const annotation = Annotation.Root({
@@ -58,16 +59,16 @@ function shouldContinue(state) {
     // End after 3 iterations, each with 2 messages
     return END;
   } else {
-    return 'reflect';
+    return "reflect";
   }
 }
 
 const builder = new StateGraph(annotation)
-  .addNode('generate', generate)
-  .addNode('reflect', reflect)
-  .addEdge(START, 'generate')
-  .addConditionalEdges('generate', shouldContinue)
-  .addEdge('reflect', 'generate');
+  .addNode("generate", generate)
+  .addNode("reflect", reflect)
+  .addEdge(START, "generate")
+  .addConditionalEdges("generate", shouldContinue)
+  .addEdge("reflect", "generate");
 
 const graph = builder.compile();
 
@@ -81,12 +82,12 @@ const initialState = {
 };
 
 for await (const output of await graph.stream(initialState)) {
-  const messageType = output.generate ? 'generate' : 'reflect';
+  const messageType = output.generate ? "generate" : "reflect";
   console.log(
-    '\nNew message:',
+    "\nNew message:",
     output[messageType].messages[
       output[messageType].messages.length - 1
     ].content.slice(0, 100),
-    '...'
+    "..."
   );
 }

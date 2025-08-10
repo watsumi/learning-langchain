@@ -9,7 +9,8 @@ import {
 } from "@langchain/langgraph";
 import { ToolNode, toolsCondition } from "@langchain/langgraph/prebuilt";
 import { ChatOpenAI } from "@langchain/openai";
-
+import * as dotenv from "dotenv/config";
+dotenv;
 const search = new DuckDuckGoSearch();
 const calculator = new Calculator();
 const tools = [search, calculator];
@@ -51,7 +52,7 @@ const graph = builder.compile();
 const input = {
   messages: [
     new HumanMessage(
-      "How old was the 30th president of the United States when he died?",
+      "How old was the 30th president of the United States when he died?"
     ),
   ],
 };

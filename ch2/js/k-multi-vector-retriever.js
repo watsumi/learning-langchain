@@ -1,21 +1,23 @@
-import * as uuid from 'uuid';
-import { MultiVectorRetriever } from 'langchain/retrievers/multi_vector';
-import { OpenAIEmbeddings } from '@langchain/openai';
-import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
-import { InMemoryStore } from '@langchain/core/stores';
-import { TextLoader } from 'langchain/document_loaders/fs/text';
-import { Document } from '@langchain/core/documents';
-import { PGVectorStore } from '@langchain/community/vectorstores/pgvector';
-import { ChatOpenAI } from '@langchain/openai';
-import { PromptTemplate } from '@langchain/core/prompts';
-import { RunnableSequence } from '@langchain/core/runnables';
-import { StringOutputParser } from '@langchain/core/output_parsers';
+import * as uuid from "uuid";
+import { MultiVectorRetriever } from "langchain/retrievers/multi_vector";
+import { OpenAIEmbeddings } from "@langchain/openai";
+import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
+import { InMemoryStore } from "@langchain/core/stores";
+import { TextLoader } from "langchain/document_loaders/fs/text";
+import { Document } from "@langchain/core/documents";
+import { PGVectorStore } from "@langchain/community/vectorstores/pgvector";
+import { ChatOpenAI } from "@langchain/openai";
+import { PromptTemplate } from "@langchain/core/prompts";
+import { RunnableSequence } from "@langchain/core/runnables";
+import { StringOutputParser } from "@langchain/core/output_parsers";
+import * as dotenv from "dotenv/config";
+dotenv;
 
 const connectionString =
-  'postgresql://langchain:langchain@localhost:6024/langchain';
-const collectionName = 'summaries';
+  "postgresql://langchain:langchain@localhost:6024/langchain";
+const collectionName = "summaries";
 
-const textLoader = new TextLoader('./test.txt');
+const textLoader = new TextLoader("./test.txt");
 const parentDocuments = await textLoader.load();
 const splitter = new RecursiveCharacterTextSplitter({
   chunkSize: 10000,
@@ -27,7 +29,7 @@ const prompt = PromptTemplate.fromTemplate(
   `Summarize the following document:\n\n{doc}`
 );
 
-const llm = new ChatOpenAI({ modelName: 'gpt-3.5-turbo' });
+const llm = new ChatOpenAI({ modelName: "gpt-3.5-turbo" });
 
 const chain = RunnableSequence.from([
   { doc: (doc) => doc.pageContent },
@@ -41,7 +43,7 @@ const summaries = await chain.batch(docs, {
   maxConcurrency: 5,
 });
 
-const idKey = 'doc_id';
+const idKey = "doc_id";
 const docIds = docs.map((_) => uuid.v4());
 // create summary docs with metadata linking to the original docs
 const summaryDocs = summaries.map((summary, i) => {
@@ -81,7 +83,7 @@ await retriever.docstore.mset(keyValuePairs);
 
 // Vectorstore alone retrieves the small chunks
 const vectorstoreResult = await retriever.vectorstore.similaritySearch(
-  'chapter on philosophy',
+  "chapter on philosophy",
   2
 );
 console.log(`summary: ${vectorstoreResult[0].pageContent}`);
@@ -90,7 +92,7 @@ console.log(
 );
 
 // Retriever returns larger chunk result
-const retrieverResult = await retriever.invoke('chapter on philosophy');
+const retrieverResult = await retriever.invoke("chapter on philosophy");
 console.log(
   `multi-vector retrieved chunk length: ${retrieverResult[0].pageContent.length}`
 );

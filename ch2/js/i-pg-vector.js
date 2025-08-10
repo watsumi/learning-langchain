@@ -18,6 +18,7 @@ import { OpenAIEmbeddings } from "@langchain/openai";
 import { PGVectorStore } from "@langchain/community/vectorstores/pgvector";
 import { v4 as uuidv4 } from "uuid";
 import * as dotenv from "dotenv/config";
+dotenv;
 
 const connectionString =
   "postgresql://langchain:langchain@localhost:6024/langchain";

@@ -1,18 +1,19 @@
-import { DuckDuckGoSearch } from '@langchain/community/tools/duckduckgo_search';
-import { Calculator } from '@langchain/community/tools/calculator';
-import { ChatOpenAI } from '@langchain/openai';
-import { OpenAIEmbeddings } from '@langchain/openai';
-import { Document } from '@langchain/core/documents';
-import { MemoryVectorStore } from 'langchain/vectorstores/memory';
+import { DuckDuckGoSearch } from "@langchain/community/tools/duckduckgo_search";
+import { Calculator } from "@langchain/community/tools/calculator";
+import { ChatOpenAI } from "@langchain/openai";
+import { OpenAIEmbeddings } from "@langchain/openai";
+import { Document } from "@langchain/core/documents";
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import {
   StateGraph,
   Annotation,
   messagesStateReducer,
   START,
-} from '@langchain/langgraph';
-import { ToolNode, toolsCondition } from '@langchain/langgraph/prebuilt';
-import { HumanMessage } from '@langchain/core/messages';
-
+} from "@langchain/langgraph";
+import { ToolNode, toolsCondition } from "@langchain/langgraph/prebuilt";
+import { HumanMessage } from "@langchain/core/messages";
+import * as dotenv from "dotenv/config";
+dotenv;
 const search = new DuckDuckGoSearch();
 const calculator = new Calculator();
 const tools = [search, calculator];
@@ -55,13 +56,13 @@ async function selectTools(state) {
 }
 
 const builder = new StateGraph(annotation)
-  .addNode('select_tools', selectTools)
-  .addNode('model', modelNode)
-  .addNode('tools', new ToolNode(tools))
-  .addEdge(START, 'select_tools')
-  .addEdge('select_tools', 'model')
-  .addConditionalEdges('model', toolsCondition)
-  .addEdge('tools', 'model');
+  .addNode("select_tools", selectTools)
+  .addNode("model", modelNode)
+  .addNode("tools", new ToolNode(tools))
+  .addEdge(START, "select_tools")
+  .addEdge("select_tools", "model")
+  .addConditionalEdges("model", toolsCondition)
+  .addEdge("tools", "model");
 
 const graph = builder.compile();
 
@@ -69,7 +70,7 @@ const graph = builder.compile();
 const input = {
   messages: [
     new HumanMessage(
-      'How old was the 30th president of the United States when he died?'
+      "How old was the 30th president of the United States when he died?"
     ),
   ],
 };

@@ -8,7 +8,8 @@ import {
   START,
   END,
 } from "@langchain/langgraph";
-
+import * as dotenv from "dotenv/config";
+dotenv;
 const embeddings = new OpenAIEmbeddings();
 // useful to generate SQL query
 const modelLowTemp = new ChatOpenAI({ temperature: 0.1 });
@@ -35,13 +36,13 @@ const sampleDocs = [
 // Initialize vector stores
 const medicalRecordsStore = await MemoryVectorStore.fromDocuments(
   sampleDocs,
-  embeddings,
+  embeddings
 );
 const medicalRecordsRetriever = medicalRecordsStore.asRetriever();
 
 const insuranceFaqsStore = await MemoryVectorStore.fromDocuments(
   sampleDocs,
-  embeddings,
+  embeddings
 );
 const insuranceFaqsRetriever = insuranceFaqsStore.asRetriever();
 
@@ -50,7 +51,7 @@ const routerPrompt = new SystemMessage(
 - records: contains medical records of the patient, such as diagnosis, treatment, and prescriptions.
 - insurance: contains frequently asked questions about insurance policies, claims, and coverage.
 
-Output only the domain name.`,
+Output only the domain name.`
 );
 
 async function routerNode(state) {
@@ -87,11 +88,11 @@ async function retrieveInsuranceFaqs(state) {
 }
 
 const medicalRecordsPrompt = new SystemMessage(
-  "You are a helpful medical chatbot, who answers questions based on the patient's medical records, such as diagnosis, treatment, and prescriptions.",
+  "You are a helpful medical chatbot, who answers questions based on the patient's medical records, such as diagnosis, treatment, and prescriptions."
 );
 
 const insuranceFaqsPrompt = new SystemMessage(
-  "You are a helpful medical insurance chatbot, who answers frequently asked questions about insurance policies, claims, and coverage.",
+  "You are a helpful medical insurance chatbot, who answers frequently asked questions about insurance policies, claims, and coverage."
 );
 
 async function generateAnswer(state) {
