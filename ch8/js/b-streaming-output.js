@@ -1,12 +1,14 @@
 import { HumanMessage } from "@langchain/core/messages";
-
+import { StateGraph } from "@langchain/langgraph";
+import * as dotenv from "dotenv/config";
+dotenv;
 // Assuming graph is already created and configured
 const graph = new StateGraph().compile();
 
 const input = {
   messages: [
     new HumanMessage(
-      "How old was the 30th president of the United States when he died?",
+      "How old was the 30th president of the United States when he died?"
     ),
   ],
 };
